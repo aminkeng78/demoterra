@@ -1,0 +1,23 @@
+stages:
+- name: DevOpsAASTest
+  steps:
+  - runScriptConfig:
+      image: jyothivel/devopsdemo:latest
+      shellScript: echo "Running shell script"
+- name: Publish image
+  steps:
+  - publiconmageConfig:
+      dockerfilePath: ./Dockerfile
+      buildContext: .
+      tag: jyothivel/devopsdemo:${CICD_EXECUTION_SEQUENCE}
+      pushRemote: true
+      registry: index.docker.io
+- name: Deploy
+  steps:
+  - applyYamlConfig:
+      path: ./deployment.yaml
+timeout: 600
+branch:
+  include:
+  - Master
+notification: {}
